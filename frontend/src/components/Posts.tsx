@@ -40,23 +40,26 @@ const Posts = () => {
           {item.posts.map((i) => (
             <div
               key={i.title}
-              className="mb-2 max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+              className="mb-2 max-w-md bg-white border border-gray-200 rounded-lg shadow hover:shadow-md"
             >
-              <div>
-                <img className="rounded-t-lg" src={i.img} alt={i.title} />
+              <div className="mt-2 flex justify-center">
+                <img
+                  className="rounded w-96"
+                  src={i.img}
+                  alt={i.title}
+                  loading="lazy"
+                />
               </div>
               <div className="p-5">
                 <div>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
                     {i.title}
                   </h5>
                 </div>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  {i.desc}
-                </p>
+                <p className="mb-3 font-normal text-gray-700">{i.desc}</p>
                 <button
                   onClick={handleLike}
-                  className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                  className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
                 >
                   Like {i.likes}
                 </button>
@@ -68,13 +71,13 @@ const Posts = () => {
       <div>
         <button
           onClick={callApi}
-          className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+          className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
         >
           callApi
         </button>
         <button
           onClick={callProtectedApi}
-          className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+          className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
         >
           callProtectedApi
         </button>

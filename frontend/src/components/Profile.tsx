@@ -2,8 +2,14 @@ import { useContext, useState } from "react";
 import { Store } from "../App";
 
 const Profile = () => {
-  const { setIsAuthenticated, setCreatingPost, user, logout, isAuthenticated } =
-    useContext(Store);
+  const {
+    setIsAuthenticated,
+    setCreatingPost,
+    user,
+    logout,
+    isAuthenticated,
+    creatingPost,
+  } = useContext(Store);
   const [dropdown, setDropdown] = useState(false);
 
   const handleLogout = () => {
@@ -50,19 +56,19 @@ const Profile = () => {
           <div className="flex flex-col items-center py-1">
             <button
               onClick={handleCreatePost}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
+              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
             >
-              Create
+              {creatingPost ? "Posts" : "Create"}
             </button>
             <button
               onClick={handleLogout}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
+              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
             >
               Logout
             </button>
             <button
               onClick={handleDeleteAccount}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
+              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
             >
               Delete
             </button>

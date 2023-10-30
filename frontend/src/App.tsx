@@ -11,6 +11,48 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [creatingPost, setCreatingPost] = useState(false);
   const [isAuthenticatedCustom, setIsAuthenticated] = useState(false);
+
+  const {
+    loginWithPopup,
+    user,
+    logout,
+    isAuthenticated,
+    getAccessTokenSilently,
+  } = useAuth0();
+
+  const sendPost = async (title, desc, file) => {
+    const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: user.email,
+        name: user.given_name,
+        post: { title, desc, img: file },
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+  };
+
+  const createPost = (title, desc, file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      sendPost(title, desc, reader.result);
+      setPosts((prev) => [
+        ...prev,
+        {
+          email: user.email,
+          name: user.given_name,
+          posts: [{ title, desc, img: reader.result, likes: 0 }],
+        },
+      ]);
+    };
+    setCreatingPost(false);
+  };
+
   useEffect(() => {
     const callApi = async () => {
       const URL = import.meta.env.VITE_BACKEND_URL + "post";
@@ -20,13 +62,6 @@ function App() {
     };
     callApi();
   }, []);
-  const {
-    loginWithPopup,
-    user,
-    logout,
-    isAuthenticated,
-    getAccessTokenSilently,
-  } = useAuth0();
 
   return (
     <div className="mt-24 flex flex-col items-center justify-center">
@@ -43,6 +78,7 @@ function App() {
             isAuthenticated,
             posts,
             getAccessTokenSilently,
+            createPost,
           }}
         >
           <Nav />
