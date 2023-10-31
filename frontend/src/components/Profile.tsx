@@ -23,9 +23,17 @@ const Profile = () => {
     setDropdown(false);
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
+    logout();
     setIsAuthenticated((prev) => !prev);
     setCreatingPost(false);
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}user?email=${user.email}`,
+      {
+        method: "DELETE",
+      }
+    );
+    alert("Refresh the page to see the changes");
   };
 
   return (

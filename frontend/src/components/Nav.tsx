@@ -1,13 +1,35 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Profile from "./Profile";
 import { Store } from "../App";
 
 const Nav = () => {
-  const { isAuthenticatedCustom, setIsAuthenticated, loginWithPopup } =
-    useContext(Store);
+  const {
+    isAuthenticatedCustom,
+    setIsAuthenticated,
+    loginWithPopup,
+    user,
+    isAuthenticated,
+  } = useContext(Store);
 
-  const handleSignIn = () => {
-    loginWithPopup();
+  useEffect(() => {
+    const callApi = async () => {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          given_name: user.given_name,
+          email: user.email,
+        }),
+      });
+      const data = await response.json();
+    };
+    callApi();
+  }, [isAuthenticated]);
+
+  const handleSignIn = async () => {
+    const response_data = await loginWithPopup();
     setIsAuthenticated((prev) => !prev);
   };
 

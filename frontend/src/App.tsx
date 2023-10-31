@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
 import Nav from "./components/Nav";
+import { v4 as uuidv4 } from "uuid";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -12,6 +13,17 @@ function App() {
   const [creatingPost, setCreatingPost] = useState(false);
   const [isAuthenticatedCustom, setIsAuthenticated] = useState(false);
 
+  const getAllPosts = async () => {
+    const URL = import.meta.env.VITE_BACKEND_URL + "post";
+    const response = await fetch(URL);
+    const data = await response.json();
+    setPosts(data);
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
   const {
     loginWithPopup,
     user,
@@ -20,7 +32,7 @@ function App() {
     getAccessTokenSilently,
   } = useAuth0();
 
-  const sendPost = async (title, desc, file) => {
+  const sendPost = async (id, title, desc, file) => {
     const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
       method: "POST",
       headers: {
@@ -28,40 +40,47 @@ function App() {
       },
       body: JSON.stringify({
         email: user.email,
-        name: user.given_name,
-        post: { title, desc, img: file },
+        post: {
+          id,
+          email: user.email,
+          name: user.given_name,
+          title,
+          desc,
+          img: file,
+          likes: [],
+        },
       }),
     });
     const data = await response.json();
-    console.log(data);
   };
 
   const createPost = (title, desc, file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      sendPost(title, desc, reader.result);
-      setPosts((prev) => [
-        ...prev,
+      const id = uuidv4();
+      sendPost(id, title, desc, reader.result);
+      setPosts([
+        ...posts,
         {
           email: user.email,
           name: user.given_name,
-          posts: [{ title, desc, img: reader.result, likes: 0 }],
+          posts: [
+            {
+              email: user.email,
+              name: user.given_name,
+              id,
+              title,
+              desc,
+              img: reader.result,
+              likes: [],
+            },
+          ],
         },
       ]);
     };
     setCreatingPost(false);
   };
-
-  useEffect(() => {
-    const callApi = async () => {
-      const URL = import.meta.env.VITE_BACKEND_URL + "post";
-      const response = await fetch(URL);
-      const data = await response.json();
-      setPosts(data);
-    };
-    callApi();
-  }, []);
 
   return (
     <div className="mt-24 flex flex-col items-center justify-center">
@@ -79,6 +98,7 @@ function App() {
             posts,
             getAccessTokenSilently,
             createPost,
+            setPosts,
           }}
         >
           <Nav />
