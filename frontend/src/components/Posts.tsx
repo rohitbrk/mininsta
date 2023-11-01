@@ -4,8 +4,8 @@ const Posts = () => {
   const { posts, getAccessTokenSilently, user, setPosts } = useContext(Store);
   const URL = import.meta.env.VITE_BACKEND_URL;
 
-  const handleLike = async (postOwner, postId, email) => {
-    if (!email) {
+  const handleLike = async (postOwner, postId) => {
+    if (!user) {
       alert("Please Login to Like or Create Posts");
       return;
     }
@@ -17,14 +17,14 @@ const Posts = () => {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ postOwner, postId, email }),
+      body: JSON.stringify({ postOwner, postId, email: user.email }),
     });
     const data = await response.json();
     if (data.status === "ok") {
       const newPosts = posts.map((item) => {
         for (const post of item.posts) {
           if (post.id === postId) {
-            post.likes.push(email);
+            post.likes.push(user.email);
           }
         }
         return item;
@@ -58,7 +58,7 @@ const Posts = () => {
                 </div>
                 <p className="mb-3 font-normal text-gray-700">{i.desc}</p>
                 <button
-                  onClick={() => handleLike(i.email, i.id, user.email)}
+                  onClick={() => handleLike(i.email, i.id)}
                   className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
                 >
                   Like {i.likes.length}

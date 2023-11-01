@@ -12,7 +12,7 @@ const Nav = () => {
   } = useContext(Store);
 
   useEffect(() => {
-    const callApi = async () => {
+    const handleSigninApi = async () => {
       const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
         method: "POST",
         headers: {
@@ -25,7 +25,7 @@ const Nav = () => {
       });
       const data = await response.json();
     };
-    callApi();
+    if (user) handleSigninApi();
   }, [isAuthenticated]);
 
   const handleSignIn = async () => {
