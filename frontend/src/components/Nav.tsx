@@ -5,13 +5,14 @@ import { Store } from "../App";
 const Nav = () => {
   const {
     isAuthenticatedCustom,
-    setIsAuthenticated,
+    setIsAuthenticatedCustom,
     loginWithPopup,
     user,
     isAuthenticated,
   } = useContext(Store);
 
   useEffect(() => {
+    if (!user) return;
     const handleSigninApi = async () => {
       const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
         method: "POST",
@@ -25,12 +26,12 @@ const Nav = () => {
       });
       const data = await response.json();
     };
-    if (user) handleSigninApi();
+    handleSigninApi();
   }, [isAuthenticated]);
 
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();
-    setIsAuthenticated((prev) => !prev);
+    setIsAuthenticatedCustom((prev) => !prev);
   };
 
   return (

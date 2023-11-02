@@ -3,6 +3,8 @@ import { getAllPosts, updateLikes, updatePosts } from "../controllers/post.js";
 const router = new Router();
 import { auth } from "express-oauth2-jwt-bearer";
 
+import { v4 as uuidv4 } from "uuid";
+
 router.get("/", async (req, res) => {
   const allPosts = await getAllPosts();
   res.json(allPosts);
@@ -16,7 +18,8 @@ const jwtCheck = auth({
 
 router.post("/", async (req, res) => {
   const { email, post } = req.body;
-  const response = await updatePosts(email, post);
+  const id = uuidv4();
+  const response = await updatePosts(email, { ...post, id });
   res.json(response);
 });
 

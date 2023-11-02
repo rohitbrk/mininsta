@@ -3,17 +3,18 @@ import { Store } from "../App";
 
 const Profile = () => {
   const {
-    setIsAuthenticated,
+    setIsAuthenticatedCustom,
     setCreatingPost,
     user,
     logout,
     isAuthenticated,
     creatingPost,
+    getAllPosts,
   } = useContext(Store);
   const [dropdown, setDropdown] = useState(false);
 
   const handleLogout = () => {
-    setIsAuthenticated((prev) => !prev);
+    setIsAuthenticatedCustom((prev) => !prev);
     setCreatingPost(false);
     logout();
   };
@@ -25,7 +26,7 @@ const Profile = () => {
 
   const handleDeleteAccount = async () => {
     logout();
-    setIsAuthenticated((prev) => !prev);
+    setIsAuthenticatedCustom((prev) => !prev);
     setCreatingPost(false);
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}user?email=${user.email}`,
@@ -33,7 +34,8 @@ const Profile = () => {
         method: "DELETE",
       }
     );
-    alert("Refresh the page to see the changes");
+    const data = await response.json();
+    if (data.status === "ok") getAllPosts();
   };
 
   return (

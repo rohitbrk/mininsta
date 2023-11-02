@@ -2,7 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
 import Nav from "./components/Nav";
-import { v4 as uuidv4 } from "uuid";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -11,11 +10,10 @@ const Store = createContext({});
 function App() {
   const [posts, setPosts] = useState([]);
   const [creatingPost, setCreatingPost] = useState(false);
-  const [isAuthenticatedCustom, setIsAuthenticated] = useState(false);
+  const [isAuthenticatedCustom, setIsAuthenticatedCustom] = useState(false);
 
   const getAllPosts = async () => {
-    const URL = import.meta.env.VITE_BACKEND_URL + "post";
-    const response = await fetch(URL);
+    const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post");
     const data = await response.json();
     setPosts(data);
   };
@@ -32,7 +30,7 @@ function App() {
     getAccessTokenSilently,
   } = useAuth0();
 
-  const sendPost = async (id, title, desc, file) => {
+  const sendPost = async (title, desc, file) => {
     const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
       method: "POST",
       headers: {
@@ -41,7 +39,6 @@ function App() {
       body: JSON.stringify({
         email: user.email,
         post: {
-          id,
           email: user.email,
           name: user.given_name,
           title,
@@ -52,14 +49,14 @@ function App() {
       }),
     });
     const data = await response.json();
+    if (data.status === "ok") getAllPosts();
   };
 
   const createPost = (title, desc, file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const id = uuidv4();
-      sendPost(id, title, desc, reader.result);
+      sendPost(title, desc, reader.result);
       setPosts([
         ...posts,
         {
@@ -69,7 +66,6 @@ function App() {
             {
               email: user.email,
               name: user.given_name,
-              id,
               title,
               desc,
               img: reader.result,
@@ -90,7 +86,7 @@ function App() {
             creatingPost,
             isAuthenticatedCustom,
             setCreatingPost,
-            setIsAuthenticated,
+            setIsAuthenticatedCustom,
             loginWithPopup,
             user,
             logout,
@@ -99,6 +95,7 @@ function App() {
             getAccessTokenSilently,
             createPost,
             setPosts,
+            getAllPosts,
           }}
         >
           <Nav />
