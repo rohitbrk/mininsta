@@ -77,7 +77,7 @@ const Nav = () => {
               clipRule="evenodd"
             />
           </svg>
-          <span className="ml-2 text-center">Sign In</span>
+          <span className="display-block m-auto pl-2 text-center">Sign In</span>
         </button>
       )}
     </div>

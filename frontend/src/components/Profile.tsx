@@ -38,7 +38,7 @@ const Profile = () => {
             <div className="font-semibold text-base">No User</div>
           )}
           <svg
-            className="-mr-1 h-5 w-5 text-gray-400"
+            className="h-5 w-5 text-gray-400 display-block m-auto"
             viewBox="0 0 20 20"
             fill="currentColor"
             aria-hidden="true"

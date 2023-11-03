@@ -21,7 +21,7 @@ const Posts = () => {
             />
           </div>
           <div className="px-6 py-4">
-            <div className="flex justify-start">
+            <div className="px-6 flex justify-between">
               <div className="items-center font-bold text-xl mb-2">
                 {item.title}
               </div>
@@ -32,7 +32,7 @@ const Posts = () => {
                 Like {item.likes.length}
               </button>
             </div>
-            <p className="text-gray-700 text-base">{item.desc}</p>
+            <p className="px-6 text-gray-700 text-base">{item.desc}</p>
           </div>
         </div>
       ))}
