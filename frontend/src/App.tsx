@@ -62,20 +62,58 @@ function App() {
         {
           email: user.email,
           name: user.given_name,
-          posts: [
-            {
-              email: user.email,
-              name: user.given_name,
-              title,
-              desc,
-              img: reader.result,
-              likes: [],
-            },
-          ],
+          title,
+          desc,
+          img: reader.result,
+          likes: [],
         },
       ]);
     };
     setCreatingPost(false);
+  };
+
+  const handleDeleteAccount = async (email) => {
+    logout();
+    setIsAuthenticatedCustom((prev) => !prev);
+    setCreatingPost(false);
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}user?email=${email}`,
+      {
+        method: "DELETE",
+      }
+    );
+    const data = await response.json();
+    if (data.status === "ok") getAllPosts();
+  };
+
+  const handleLike = async (postOwner, postId) => {
+    if (!user) {
+      alert("Please Login to Like or Create Posts");
+      return;
+    }
+    const token = await getAccessTokenSilently();
+
+    const response = await fetch(
+      import.meta.env.VITE_BACKEND_URL + "post/like",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ postOwner, postId, email: user.email }),
+      }
+    );
+    const data = await response.json();
+    if (data.status === "ok") {
+      const newPosts = posts.map((item) => {
+        if (item.id === postId) {
+          item.likes.push(user.email);
+        }
+        return item;
+      });
+      setPosts(newPosts);
+    }
   };
 
   return (
@@ -96,6 +134,8 @@ function App() {
             createPost,
             setPosts,
             getAllPosts,
+            handleDeleteAccount,
+            handleLike,
           }}
         >
           <Nav />

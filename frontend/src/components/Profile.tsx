@@ -9,7 +9,7 @@ const Profile = () => {
     logout,
     isAuthenticated,
     creatingPost,
-    getAllPosts,
+    handleDeleteAccount,
   } = useContext(Store);
   const [dropdown, setDropdown] = useState(false);
 
@@ -24,20 +24,6 @@ const Profile = () => {
     setDropdown(false);
   };
 
-  const handleDeleteAccount = async () => {
-    logout();
-    setIsAuthenticatedCustom((prev) => !prev);
-    setCreatingPost(false);
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}user?email=${user.email}`,
-      {
-        method: "DELETE",
-      }
-    );
-    const data = await response.json();
-    if (data.status === "ok") getAllPosts();
-  };
-
   return (
     <div className="relative inline-block text-left">
       <div>
@@ -46,7 +32,11 @@ const Profile = () => {
           className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={() => setDropdown((prev) => !prev)}
         >
-          {isAuthenticated ? user.given_name : "No User"}
+          {isAuthenticated ? (
+            <div className="font-semibold text-base">{user.given_name}</div>
+          ) : (
+            <div className="font-semibold text-base">No User</div>
+          )}
           <svg
             className="-mr-1 h-5 w-5 text-gray-400"
             viewBox="0 0 20 20"
@@ -77,7 +67,7 @@ const Profile = () => {
               Logout
             </button>
             <button
-              onClick={handleDeleteAccount}
+              onClick={() => handleDeleteAccount(user.email)}
               className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
             >
               Delete

@@ -11,8 +11,15 @@ import MininstaUser from "../models/user.model.js";
 // app();
 
 const getAllPosts = async () => {
-  const allPosts = await MininstaUser.find().populate().exec();
-  return allPosts;
+  const allUsersPosts = await MininstaUser.find({}, { _id: 0, posts: 1 })
+    .populate()
+    .exec();
+  const allPosts = allUsersPosts.map((item) => item.posts);
+  const postsArray = [];
+  for (let posts of allPosts) {
+    postsArray.push(...posts);
+  }
+  return postsArray;
 };
 
 const updatePosts = async (email, post) => {
