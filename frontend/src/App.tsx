@@ -68,17 +68,23 @@ function App() {
   };
 
   const handleDeleteAccount = async (email) => {
-    logout();
     setIsAuthenticatedCustom(false);
     setCreatingPost(false);
+    const token = await getAccessTokenSilently();
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}user?email=${email}`,
       {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       }
     );
     const data = await response.json();
-    if (data.status === "ok") getAllPosts();
+    if (data.status === "ok") {
+      logout();
+      getAllPosts();
+    }
   };
 
   const handleLike = async (postOwner, postId) => {

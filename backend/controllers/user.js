@@ -1,17 +1,19 @@
 import MininstaUser from "../models/user.model.js";
 
 const deleteUser = async (req, res) => {
+  console.log(req.query.email);
   try {
     const response = await MininstaUser.findOneAndDelete({
       email: req.query.email,
     });
+    console.log(response);
     if (response) res.status(200).json({ status: "ok" });
   } catch (err) {
     res.status(500).json({ status: "error", message: "Error retrieving data" });
   }
 };
 
-const LoginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const user = await MininstaUser.findOne({ email: req.body.email })
       .populate()
@@ -29,4 +31,4 @@ const LoginUser = async (req, res) => {
   }
 };
 
-export { LoginUser, deleteUser };
+export { loginUser, deleteUser };
