@@ -1,26 +1,32 @@
 import MininstaUser from "../models/user.model.js";
 
-const findUser = async (email) => {
-  const user = await MininstaUser.findOne({ email: email }).populate().exec();
-  return user;
+const deleteUser = async (req, res) => {
+  try {
+    const response = await MininstaUser.findOneAndDelete({
+      email: req.query.email,
+    });
+    if (response) res.status(200).json({ status: "ok" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Error retrieving data" });
+  }
 };
 
-const deleteUser = async (email) => {
-  const response = await MininstaUser.findOneAndDelete({ email: email });
-  if (response) return { status: "ok" };
+const LoginUser = async (req, res) => {
+  try {
+    const user = await MininstaUser.findOne({ email: req.body.email })
+      .populate()
+      .exec();
+    if (user) return res.status(200).json({ message: "user already exists" });
+    const newUser = new MininstaUser({
+      name: req.body.given_name,
+      email: req.body.email,
+      posts: [],
+    });
+    newUser.save();
+    res.status(200).json({ status: "ok" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Error retrieving data" });
+  }
 };
 
-const createUser = async (name, email) => {
-  const user = await findUser(email);
-  if (user) return { msg: "user already exists" };
-  const newUser = new MininstaUser({
-    name: name,
-    email: email,
-    posts: [],
-  });
-  newUser.save();
-
-  return newUser;
-};
-
-export { createUser, deleteUser };
+export { LoginUser, deleteUser };

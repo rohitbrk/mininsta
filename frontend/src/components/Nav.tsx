@@ -3,36 +3,7 @@ import Profile from "./Profile";
 import { Store } from "../App";
 
 const Nav = () => {
-  const {
-    isAuthenticatedCustom,
-    setIsAuthenticatedCustom,
-    loginWithPopup,
-    user,
-    isAuthenticated,
-  } = useContext(Store);
-
-  useEffect(() => {
-    if (!user) return;
-    const handleSigninApi = async () => {
-      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          given_name: user.given_name,
-          email: user.email,
-        }),
-      });
-      const data = await response.json();
-    };
-    handleSigninApi();
-  }, [isAuthenticated]);
-
-  const handleSignIn = async () => {
-    const response_data = await loginWithPopup();
-    setIsAuthenticatedCustom((prev) => !prev);
-  };
+  const { isAuthenticatedCustom, handleSignIn } = useContext(Store);
 
   return (
     <div className="flex justify-between mb-6">

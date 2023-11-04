@@ -3,33 +3,14 @@ import { getAllPosts, updateLikes, updatePosts } from "../controllers/post.js";
 const router = new Router();
 import { auth } from "express-oauth2-jwt-bearer";
 
-import { v4 as uuidv4 } from "uuid";
-
-router.get("/", async (req, res) => {
-  const allPosts = await getAllPosts();
-  res.json(allPosts);
-});
-
 const jwtCheck = auth({
   audience: process.env.AUDIENCE,
   issuerBaseURL: process.env.ISSUER_BASE_URL,
   tokenSigningAlg: process.env.TOKEN_SIGNIN_ALG,
 });
 
-router.post("/", async (req, res) => {
-  const { email, post } = req.body;
-  const id = uuidv4();
-  const response = await updatePosts(email, { ...post, id });
-  res.json(response);
-});
-
-router.post("/like", jwtCheck, async (req, res) => {
-  const response = await updateLikes(
-    req.body.postOwner,
-    req.body.postId,
-    req.body.email
-  );
-  res.json(response);
-});
+router.get("/", getAllPosts);
+router.post("/", jwtCheck, updatePosts);
+router.post("/like", jwtCheck, updateLikes);
 
 export { router as post };
