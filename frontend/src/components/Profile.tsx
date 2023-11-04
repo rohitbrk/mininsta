@@ -10,7 +10,25 @@ const Profile = () => {
     handleDeleteAccount,
     handleLogout,
   } = useContext(Store);
+
   const [dropdown, setDropdown] = useState(false);
+  const dropdownElements = [
+    {
+      name: creatingPost ? "Posts" : "Create",
+      onClick: () => {
+        setCreatingPost(true);
+        setDropdown(false);
+      },
+    },
+    {
+      name: "Logout",
+      onClick: handleLogout,
+    },
+    {
+      name: "Delete",
+      onClick: () => handleDeleteAccount(user.email),
+    },
+  ];
 
   return (
     <div className="relative inline-block text-left">
@@ -42,27 +60,15 @@ const Profile = () => {
       {dropdown ? (
         <div className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="flex flex-col items-center py-1">
-            <button
-              onClick={() => {
-                setCreatingPost(true);
-                setDropdown(false);
-              }}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
-            >
-              {creatingPost ? "Posts" : "Create"}
-            </button>
-            <button
-              onClick={handleLogout}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
-            >
-              Logout
-            </button>
-            <button
-              onClick={() => handleDeleteAccount(user.email)}
-              className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
-            >
-              Delete
-            </button>
+            {dropdownElements.map((item) => (
+              <button
+                key={item.name}
+                onClick={item.onClick}
+                className="w-32 block flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-2 mb-2"
+              >
+                {item.name}
+              </button>
+            ))}
           </div>
         </div>
       ) : (

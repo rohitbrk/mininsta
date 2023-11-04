@@ -19,6 +19,7 @@ const getAllPosts = async (req, res) => {
 
 const updatePosts = async (req, res) => {
   try {
+    console.log(req.body);
     const { email, post } = req.body;
     const id = uuidv4();
     const user = await MininstaUser.findOne({ email: email }).populate().exec();

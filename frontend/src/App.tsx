@@ -35,6 +35,7 @@ function App() {
   }, []);
 
   const handleCreatePost = async (title, desc, file) => {
+    setLoading(true);
     const token = await getAccessTokenSilently();
     const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
       method: "POST",
@@ -116,6 +117,25 @@ function App() {
       setPosts(newPosts);
     }
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const handleSigninApi = async () => {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          given_name: user.given_name,
+          email: user.email,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+    };
+    handleSigninApi();
+  }, [isAuthenticated]);
 
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();
