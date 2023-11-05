@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import Profile from "./Profile";
 import { Store } from "../App";
 
 const Nav = () => {
-  const { isAuthenticatedCustom, handleSignIn } = useContext(Store);
+  const { isAuthenticated, handleSignIn } = useContext(Store);
 
   return (
     <div className="flex justify-between mb-6">
@@ -27,7 +27,7 @@ const Nav = () => {
           </div>
         </div>
       </a>
-      {isAuthenticatedCustom ? (
+      {isAuthenticated ? (
         <Profile />
       ) : (
         <button

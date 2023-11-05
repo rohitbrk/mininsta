@@ -16,15 +16,21 @@ const Posts = () => {
               key={item.id}
               className="max-w-md rounded overflow-hidden shadow-md hover:shadow-lg bg-gray-50 mb-2"
             >
-              <div className="font-semibold text-xl ml-6 my-1 p-1.5 inline-block bg-gray-200 rounded-full text-gray-700">
-                {item.name}
+              <div className="flex font-semibold text-xl ml-6 my-1 p-1.5 inline-block rounded-full text-gray-700">
+                <div>
+                  <img
+                    className="w-10 h-10 mb-3 mr-1 rounded-full shadow-lg"
+                    src={item.picture}
+                  />
+                </div>
+                <div>
+                  <p className="flex justify-center items-center mt-1">
+                    {item.name}
+                  </p>
+                </div>
               </div>
               <div className="mt-2 flex justify-center">
-                <img
-                  className="w-80 rounded"
-                  src={item.img}
-                  alt="Sunset in the mountains"
-                />
+                <img className="w-80 rounded" src={item.img} alt={item.title} />
               </div>
               <div className="px-6 py-4">
                 <div className="px-6 flex justify-between">

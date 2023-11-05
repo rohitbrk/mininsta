@@ -5,7 +5,6 @@ const Profile = () => {
   const {
     setCreatingPost,
     user,
-    isAuthenticated,
     creatingPost,
     handleDeleteAccount,
     handleLogout,
@@ -35,16 +34,19 @@ const Profile = () => {
       <div>
         <button
           type="button"
-          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-1 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={() => setDropdown((prev) => !prev)}
         >
-          {isAuthenticated ? (
-            <div className="font-semibold text-base">{user.given_name}</div>
-          ) : (
-            <div className="font-semibold text-base">No User</div>
-          )}
+          <div className="flex font-semibold text-base">
+            <img
+              className="w-6 h-6 mt-1 mb-2 mr-1 rounded-full shadow-lg"
+              src={user.picture}
+            />
+            <p className="mt-1">{user.given_name}</p>
+          </div>
+
           <svg
-            className="h-5 w-5 text-gray-400 display-block m-auto"
+            className="h-5 w-5 text-gray-400 display-block mt-2"
             viewBox="0 0 20 20"
             fill="currentColor"
             aria-hidden="true"

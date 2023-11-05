@@ -52,6 +52,7 @@ function App() {
           desc,
           img: file,
           likes: [],
+          picture: user.picture,
         },
       }),
     });
@@ -84,7 +85,7 @@ function App() {
     const data = await response.json();
     if (data.status === "ok") {
       logout();
-      getAllPosts();
+      getAllPosts(setPosts, setLoading);
     }
   };
 
@@ -129,10 +130,10 @@ function App() {
         body: JSON.stringify({
           given_name: user.given_name,
           email: user.email,
+          picture: user.picture,
         }),
       });
       const data = await response.json();
-      console.log(data);
     };
     handleSigninApi();
   }, [isAuthenticated]);

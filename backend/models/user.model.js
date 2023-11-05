@@ -4,12 +4,14 @@ const { Schema } = mongoose;
 const mininstaUserSchema = new Schema(
   {
     name: String,
+    picture: String,
     email: { type: String, required: true },
     posts: [
       {
         email: String,
         id: String,
         name: String,
+        picture: String,
         title: String,
         desc: String,
         img: String,

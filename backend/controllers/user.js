@@ -19,6 +19,7 @@ const loginUser = async (req, res) => {
     if (user) return res.status(200).json({ message: "user already exists" });
     const newUser = new MininstaUser({
       name: req.body.given_name,
+      picture: req.body.given_name,
       email: req.body.email,
       posts: [],
     });
