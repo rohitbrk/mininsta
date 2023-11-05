@@ -13,6 +13,7 @@ function App() {
   const [creatingPost, setCreatingPost] = useState(false);
   const [isAuthenticatedCustom, setIsAuthenticatedCustom] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [myPosts, setMyPosts] = useState(false);
   const {
     loginWithPopup,
     user,
@@ -172,6 +173,8 @@ function App() {
             loading,
             handleSignIn,
             handleLogout,
+            myPosts,
+            setMyPosts,
           }}
         >
           <Nav />

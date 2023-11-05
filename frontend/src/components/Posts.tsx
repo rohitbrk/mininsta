@@ -1,7 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Store } from "../App";
 const Posts = () => {
-  const { posts, handleLike, loading } = useContext(Store);
+  const { user, myPosts, posts, handleLike, loading } = useContext(Store);
+
+  const renderPosts = myPosts
+    ? posts.filter((post) => post.email === user.email)
+    : posts;
 
   return (
     <>
@@ -11,7 +15,7 @@ const Posts = () => {
         </div>
       ) : (
         <>
-          {posts.map((item) => (
+          {renderPosts.map((item) => (
             <div
               key={item.id}
               className="max-w-md rounded overflow-hidden shadow-md hover:shadow-lg bg-gray-50 mb-2"

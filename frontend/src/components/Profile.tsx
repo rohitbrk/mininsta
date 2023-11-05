@@ -8,6 +8,8 @@ const Profile = () => {
     creatingPost,
     handleDeleteAccount,
     handleLogout,
+    setMyPosts,
+    myPosts,
   } = useContext(Store);
 
   const [dropdown, setDropdown] = useState(false);
@@ -16,6 +18,13 @@ const Profile = () => {
       name: creatingPost ? "Posts" : "Create",
       onClick: () => {
         setCreatingPost(true);
+        setDropdown(false);
+      },
+    },
+    {
+      name: myPosts ? "All Posts" : "My Posts",
+      onClick: () => {
+        setMyPosts((prev) => !prev);
         setDropdown(false);
       },
     },
