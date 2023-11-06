@@ -35,7 +35,7 @@ function App() {
     verifyLoggedIn();
   }, []);
 
-  const handleCreatePost = async (title, desc, file) => {
+  const handleCreatePost = async (title, desc, date, file) => {
     setLoading(true);
     const token = await getAccessTokenSilently();
     const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
@@ -51,6 +51,7 @@ function App() {
           name: user.given_name,
           title,
           desc,
+          date,
           img: file,
           likes: [],
           picture: user.picture,
@@ -62,10 +63,13 @@ function App() {
   };
 
   const createPost = (title, desc, file) => {
+    const dateString = new Date().toDateString().split(" ");
+    const date = `${dateString[1]}${dateString[2]}, ${dateString[3]}`;
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      handleCreatePost(title, desc, reader.result);
+      handleCreatePost(title, desc, date, reader.result);
     };
     setCreatingPost(false);
   };

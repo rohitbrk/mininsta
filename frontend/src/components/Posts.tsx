@@ -1,8 +1,7 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Store } from "../App";
 const Posts = () => {
   const { user, myPosts, posts, handleLike, loading } = useContext(Store);
-
   const renderPosts = myPosts
     ? posts.filter((post) => post.email === user.email)
     : posts;
@@ -18,22 +17,26 @@ const Posts = () => {
           {renderPosts.map((item) => (
             <div
               key={item.id}
-              className="max-w-md rounded overflow-hidden shadow-md hover:shadow-lg bg-gray-50 mb-2"
+              className="border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300"
             >
-              <div className="flex font-semibold text-xl ml-6 my-1 p-1.5 inline-block rounded-full text-gray-700">
-                <div>
-                  <img
-                    className="w-10 h-10 mb-3 mr-1 rounded-full shadow-lg"
-                    src={item.picture}
-                  />
+              <div className="flex justify-between flex font-semibold text-xl ml-6 my-1 p-1.5 mb-1 inline-block rounded-full text-gray-700">
+                <div className="flex">
+                  <div>
+                    <img
+                      className="w-8 h-8 mr-1 rounded-full shadow-lg"
+                      src={item.picture}
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-lg flex justify-center items-center">
+                      {item.name}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="flex justify-center items-center mt-1">
-                    {item.name}
-                  </p>
-                </div>
+                <div className="text-sm text-gray-500">{item.date}</div>
               </div>
-              <div className="mt-2 flex justify-center">
+              <div className="flex justify-center">
                 <img className="w-80 rounded" src={item.img} alt={item.title} />
               </div>
               <div className="px-6 py-4">

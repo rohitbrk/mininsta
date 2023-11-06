@@ -2,16 +2,12 @@ import { useState } from "react";
 import { Store } from "../App";
 import { useContext } from "react";
 
-type UseContextProps = {
-  createPost: (title: string, desc: string, file: File) => void;
-};
-
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState(null);
 
-  const { createPost }: UseContextProps = useContext(Store);
+  const { createPost } = useContext(Store);
 
   return (
     <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:shadow-md mt-4">

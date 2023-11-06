@@ -14,6 +14,7 @@ const mininstaUserSchema = new Schema(
         picture: String,
         title: String,
         desc: String,
+        date: String,
         img: String,
         likes: [],
       },
