@@ -1,8 +1,12 @@
 // @ts-nocheck
 import { useContext } from "react";
-import { Store } from "../App";
+import { AuthContext, Store } from "../App";
+import { PostsContext } from "../context/PostsContext";
 const Posts = () => {
-  const { user, myPosts, posts, handleLike, loading } = useContext(Store);
+  const { user } = useContext(AuthContext);
+  const posts = useContext(PostsContext);
+  const { myPosts, handleLike, loading } = useContext(Store);
+
   const renderPosts = myPosts
     ? posts.filter((post) => post.name === user.name)
     : posts;

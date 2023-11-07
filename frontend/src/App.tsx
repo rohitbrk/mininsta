@@ -1,20 +1,25 @@
 // @ts-nocheck
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
 import Nav from "./components/Nav";
-import { getAllPosts } from "./utils/post";
+import { useFetch } from "./hooks/useFetch";
 
 import { useAuth0 } from "@auth0/auth0-react";
+import { getDate } from "./utils/date";
+import { PostsContext, PostsDispatchContext } from "./context/PostsContext";
 
 const Store = createContext({});
+const AuthContext = createContext({});
 
 function App() {
-  const [posts, setPosts] = useState([]);
+  const posts = useContext(PostsContext);
+  const dispatch = useContext(PostsDispatchContext);
+
   const [creatingPost, setCreatingPost] = useState(false);
-  const [isAuthenticatedCustom, setIsAuthenticatedCustom] = useState(false);
   const [loading, setLoading] = useState(false);
   const [myPosts, setMyPosts] = useState(false);
+
   const {
     loginWithPopup,
     user,
@@ -23,33 +28,31 @@ function App() {
     getAccessTokenSilently,
   } = useAuth0();
 
-  useEffect(() => {
+  const fetchPosts = async () => {
     setLoading(true);
-    getAllPosts(setPosts, setLoading);
+    const posts = await useFetch(import.meta.env.VITE_BACKEND_URL + "post", {});
+    dispatch({ type: "SET_POSTS", payload: posts });
+    setLoading(false);
+  };
 
-    const verifyLoggedIn = async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        if (token) setIsAuthenticatedCustom(true);
-      } catch (err) {}
-    };
-    verifyLoggedIn();
+  useEffect(() => {
+    fetchPosts();
   }, []);
 
   useEffect(() => {
     if (!isAuthenticated) return;
+
     const handleSigninApi = async () => {
-      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
+      const data = await useFetch(import.meta.env.VITE_BACKEND_URL + "user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
+        body: {
           name: user.name,
           picture: user.picture,
-        }),
+        },
       });
-      const data = await response.json();
     };
     handleSigninApi();
   }, [isAuthenticated]);
@@ -57,13 +60,14 @@ function App() {
   const handleCreatePost = async (title, desc, date, file) => {
     setLoading(true);
     const token = await getAccessTokenSilently();
-    const response = await fetch(import.meta.env.VITE_BACKEND_URL + "post", {
+
+    const data = await useFetch(import.meta.env.VITE_BACKEND_URL + "post", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
+      body: {
         post: {
           name: user.name,
           title,
@@ -73,15 +77,15 @@ function App() {
           likes: [],
           picture: user.picture,
         },
-      }),
+      },
     });
-    const data = await response.json();
-    if (data.status === "ok") getAllPosts(setPosts, setLoading);
+    if (data.status === "ok") {
+      fetchPosts();
+    }
   };
 
   const createPost = (title, desc, file) => {
-    const dateString = new Date().toDateString().split(" ");
-    const date = `${dateString[1]}${dateString[2]}, ${dateString[3]}`;
+    const date = getDate();
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -92,10 +96,10 @@ function App() {
   };
 
   const handleDeleteAccount = async (name) => {
-    setIsAuthenticatedCustom(false);
     setCreatingPost(false);
     const token = await getAccessTokenSilently();
-    const response = await fetch(
+
+    const data = await useFetch(
       `${import.meta.env.VITE_BACKEND_URL}user?name=${name}`,
       {
         method: "DELETE",
@@ -104,10 +108,10 @@ function App() {
         },
       }
     );
-    const data = await response.json();
+
     if (data.status === "ok") {
       logout();
-      getAllPosts(setPosts, setLoading);
+      fetchPosts();
     }
   };
 
@@ -118,7 +122,7 @@ function App() {
     }
     const token = await getAccessTokenSilently();
 
-    const response = await fetch(
+    const data = await useFetch(
       import.meta.env.VITE_BACKEND_URL + "post/like",
       {
         method: "POST",
@@ -126,28 +130,19 @@ function App() {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ postOwner, postId, name: user.name }),
+        body: { postOwner, postId, name: user.name },
       }
     );
-    const data = await response.json();
-    if (data.status === "ok") {
-      const newPosts = posts.map((item) => {
-        if (item.id === postId) {
-          item.likes.push(user.name);
-        }
-        return item;
-      });
-      setPosts(newPosts);
-    }
+
+    if (data.status === "ok")
+      dispatch({ type: "LIKE_POST", payload: { postId, name: user.name } });
   };
 
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();
-    setIsAuthenticatedCustom(true);
   };
 
   const handleLogout = () => {
-    setIsAuthenticatedCustom(false);
     setCreatingPost(false);
     logout();
   };
@@ -158,18 +153,8 @@ function App() {
         <Store.Provider
           value={{
             creatingPost,
-            isAuthenticatedCustom,
             setCreatingPost,
-            setIsAuthenticatedCustom,
-            loginWithPopup,
-            user,
-            logout,
-            isAuthenticated,
-            posts,
-            getAccessTokenSilently,
             createPost,
-            setPosts,
-            getAllPosts,
             handleDeleteAccount,
             handleLike,
             loading,
@@ -179,14 +164,21 @@ function App() {
             setMyPosts,
           }}
         >
-          <Nav />
-          <Main />
-          <Footer />
+          <AuthContext.Provider
+            value={{
+              user,
+              isAuthenticated,
+            }}
+          >
+            <Nav />
+            <Main />
+            <Footer />
+          </AuthContext.Provider>
         </Store.Provider>
       </div>
     </div>
   );
 }
 
-export { Store };
+export { Store, AuthContext };
 export default App;

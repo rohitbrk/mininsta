@@ -1,10 +1,12 @@
 // @ts-nocheck
 import { useContext } from "react";
 import Profile from "./Profile";
-import { Store } from "../App";
+import { AuthContext, Store } from "../App";
 
 const Nav = () => {
-  const { isAuthenticated, handleSignIn } = useContext(Store);
+  const { isAuthenticated } = useContext(AuthContext);
+
+  const { handleSignIn } = useContext(Store);
 
   return (
     <div className="flex justify-between mb-6">

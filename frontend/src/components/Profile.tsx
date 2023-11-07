@@ -1,11 +1,12 @@
 // @ts-nocheck
 import { useContext, useState } from "react";
-import { Store } from "../App";
+import { AuthContext, Store } from "../App";
 
 const Profile = () => {
+  const { user } = useContext(AuthContext);
+
   const {
     setCreatingPost,
-    user,
     creatingPost,
     handleDeleteAccount,
     handleLogout,
