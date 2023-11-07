@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useContext, useState } from "react";
 import { Store } from "../App";
 
@@ -34,7 +35,7 @@ const Profile = () => {
     },
     {
       name: "Delete",
-      onClick: () => handleDeleteAccount(user.email),
+      onClick: () => handleDeleteAccount(user.name),
     },
   ];
 

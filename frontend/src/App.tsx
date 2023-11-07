@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createContext, useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
@@ -35,6 +36,24 @@ function App() {
     verifyLoggedIn();
   }, []);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const handleSigninApi = async () => {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: user.name,
+          picture: user.picture,
+        }),
+      });
+      const data = await response.json();
+    };
+    handleSigninApi();
+  }, [isAuthenticated]);
+
   const handleCreatePost = async (title, desc, date, file) => {
     setLoading(true);
     const token = await getAccessTokenSilently();
@@ -45,10 +64,8 @@ function App() {
         authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        email: user.email,
         post: {
-          email: user.email,
-          name: user.given_name,
+          name: user.name,
           title,
           desc,
           date,
@@ -74,12 +91,12 @@ function App() {
     setCreatingPost(false);
   };
 
-  const handleDeleteAccount = async (email) => {
+  const handleDeleteAccount = async (name) => {
     setIsAuthenticatedCustom(false);
     setCreatingPost(false);
     const token = await getAccessTokenSilently();
     const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}user?email=${email}`,
+      `${import.meta.env.VITE_BACKEND_URL}user?name=${name}`,
       {
         method: "DELETE",
         headers: {
@@ -109,39 +126,20 @@ function App() {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ postOwner, postId, email: user.email }),
+        body: JSON.stringify({ postOwner, postId, name: user.name }),
       }
     );
     const data = await response.json();
     if (data.status === "ok") {
       const newPosts = posts.map((item) => {
         if (item.id === postId) {
-          item.likes.push(user.email);
+          item.likes.push(user.name);
         }
         return item;
       });
       setPosts(newPosts);
     }
   };
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    const handleSigninApi = async () => {
-      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          given_name: user.given_name,
-          email: user.email,
-          picture: user.picture,
-        }),
-      });
-      const data = await response.json();
-    };
-    handleSigninApi();
-  }, [isAuthenticated]);
 
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import { Store } from "../App";
 import { useContext } from "react";
