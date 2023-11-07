@@ -3,7 +3,7 @@ import MininstaUser from "../models/user.model.js";
 const deleteUser = async (req, res) => {
   try {
     const response = await MininstaUser.findOneAndDelete({
-      email: req.query.email,
+      name: req.query.name,
     });
     if (response) res.status(200).json({ status: "ok" });
   } catch (err) {
@@ -13,14 +13,13 @@ const deleteUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const user = await MininstaUser.findOne({ email: req.body.email })
+    const user = await MininstaUser.findOne({ name: req.body.name })
       .populate()
       .exec();
     if (user) return res.status(200).json({ message: "user already exists" });
     const newUser = new MininstaUser({
-      name: req.body.given_name,
+      name: req.body.name,
       picture: req.body.picture,
-      email: req.body.email,
       posts: [],
     });
     newUser.save();

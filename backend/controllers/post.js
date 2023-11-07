@@ -19,9 +19,11 @@ const getAllPosts = async (req, res) => {
 
 const updatePosts = async (req, res) => {
   try {
-    const { email, post } = req.body;
+    const { post } = req.body;
     const id = uuidv4();
-    const user = await MininstaUser.findOne({ email: email }).populate().exec();
+    const user = await MininstaUser.findOne({ name: post.name })
+      .populate()
+      .exec();
     user.posts.push({ ...post, id });
     await user.save();
     res.status(200).json({ status: "ok" });
@@ -32,17 +34,17 @@ const updatePosts = async (req, res) => {
 
 const updateLikes = async (req, res) => {
   try {
-    const { postOwner, postId, email } = req.body;
-    const user = await MininstaUser.findOne({ email: postOwner })
+    const { postOwner, postId, name } = req.body;
+    const user = await MininstaUser.findOne({ name: postOwner })
       .populate()
       .exec();
     for (const post of user.posts) {
       if (post.id === postId) {
-        if (post.likes.includes(email))
+        if (post.likes.includes(name))
           return res
             .status(200)
             .json({ status: "ok", message: "already liked" });
-        post.likes.push(email);
+        post.likes.push(name);
       }
     }
     await user.save();

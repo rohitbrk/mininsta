@@ -5,10 +5,9 @@ const mininstaUserSchema = new Schema(
   {
     name: String,
     picture: String,
-    email: { type: String, required: true },
+    name: { type: String, required: true },
     posts: [
       {
-        email: String,
         id: String,
         name: String,
         picture: String,
