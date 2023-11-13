@@ -1,25 +1,38 @@
 // @ts-nocheck
 import { useContext, useState } from "react";
 import { AuthContext, Store } from "../App";
+import { useFetch } from "../hooks/useFetch";
 
 const Profile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout, getAccessTokenSilently } = useContext(AuthContext);
 
-  const {
-    setCreatingPost,
-    creatingPost,
-    handleDeleteAccount,
-    handleLogout,
-    setMyPosts,
-    myPosts,
-  } = useContext(Store);
+  const { setCreatingPost, creatingPost, setMyPosts, myPosts, fetchPosts } =
+    useContext(Store);
+
+  const handleLogout = () => {
+    setCreatingPost(false);
+    logout();
+  };
+
+  const handleDeleteAccount = async (name) => {
+    setCreatingPost(false);
+    const token = await getAccessTokenSilently();
+    const data = await useFetch(`/user?name=${name}`, token, {
+      method: "DELETE",
+    });
+
+    if (data.status === "ok") {
+      logout();
+      fetchPosts(1);
+    }
+  };
 
   const [dropdown, setDropdown] = useState(false);
   const dropdownElements = [
     {
       name: creatingPost ? "Posts" : "Create",
       onClick: () => {
-        setCreatingPost(true);
+        setCreatingPost((prev) => !prev);
         setDropdown(false);
       },
     },

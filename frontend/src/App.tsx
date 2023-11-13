@@ -4,21 +4,24 @@ import Footer from "./components/Footer";
 import Main from "./components/Main";
 import Nav from "./components/Nav";
 import { useFetch } from "./hooks/useFetch";
-
 import { useAuth0 } from "@auth0/auth0-react";
 import { getDate } from "./utils/date";
 import { PostsContext, PostsDispatchContext } from "./context/PostsContext";
 
 const Store = createContext({});
 const AuthContext = createContext({});
+const PaginationContext = createContext(null);
 
 function App() {
   const posts = useContext(PostsContext);
-  const dispatch = useContext(PostsDispatchContext);
+  const postsDispatch = useContext(PostsDispatchContext);
 
   const [creatingPost, setCreatingPost] = useState(false);
   const [loading, setLoading] = useState(false);
   const [myPosts, setMyPosts] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
   const {
     loginWithPopup,
@@ -28,26 +31,26 @@ function App() {
     getAccessTokenSilently,
   } = useAuth0();
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (page) => {
     setLoading(true);
-    const posts = await useFetch(import.meta.env.VITE_BACKEND_URL + "post", {});
-    dispatch({ type: "SET_POSTS", payload: posts });
+    const data = await useFetch(`/post?page=${page}`, "", {});
+    setPageCount(data.pageCount);
+    postsDispatch({ type: "SET_POSTS", payload: data.posts });
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    fetchPosts(page);
+  }, [page]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const handleSigninApi = async () => {
-      const data = await useFetch(import.meta.env.VITE_BACKEND_URL + "user", {
+      const token = await getAccessTokenSilently();
+
+      const data = await useFetch("/user", token, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: {
           name: user.name,
           picture: user.picture,
@@ -57,121 +60,30 @@ function App() {
     handleSigninApi();
   }, [isAuthenticated]);
 
-  const handleCreatePost = async (title, desc, date, file) => {
-    setLoading(true);
-    const token = await getAccessTokenSilently();
-
-    const data = await useFetch(import.meta.env.VITE_BACKEND_URL + "post", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: {
-        post: {
-          name: user.name,
-          title,
-          desc,
-          date,
-          img: file,
-          likes: [],
-          picture: user.picture,
-        },
-      },
-    });
-    if (data.status === "ok") {
-      fetchPosts();
-    }
-  };
-
-  const createPost = (title, desc, file) => {
-    const date = getDate();
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      handleCreatePost(title, desc, date, reader.result);
-    };
-    setCreatingPost(false);
-  };
-
-  const handleDeleteAccount = async (name) => {
-    setCreatingPost(false);
-    const token = await getAccessTokenSilently();
-
-    const data = await useFetch(
-      `${import.meta.env.VITE_BACKEND_URL}user?name=${name}`,
-      {
-        method: "DELETE",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (data.status === "ok") {
-      logout();
-      fetchPosts();
-    }
-  };
-
-  const handleLike = async (postOwner, postId) => {
-    if (!user) {
-      alert("Please Login to Like or Create Posts");
-      return;
-    }
-    const token = await getAccessTokenSilently();
-
-    const data = await useFetch(
-      import.meta.env.VITE_BACKEND_URL + "post/like",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: { postOwner, postId, name: user.name },
-      }
-    );
-
-    if (data.status === "ok")
-      dispatch({ type: "LIKE_POST", payload: { postId, name: user.name } });
-  };
-
-  const handleSignIn = async () => {
-    const response_data = await loginWithPopup();
-  };
-
-  const handleLogout = () => {
-    setCreatingPost(false);
-    logout();
-  };
-
   return (
-    <div className="mt-24 flex flex-col items-center justify-center">
-      <div className="w-full max-w-md">
+    <div className="mt-2 flex flex-col items-center justify-center">
+      <div className="md:w-full w-screen">
         <Store.Provider
           value={{
             creatingPost,
             setCreatingPost,
-            createPost,
-            handleDeleteAccount,
-            handleLike,
             loading,
-            handleSignIn,
-            handleLogout,
             myPosts,
             setMyPosts,
+            fetchPosts,
+            setLoading,
           }}
         >
           <AuthContext.Provider
             value={{
               user,
-              isAuthenticated,
+              logout,
+              getAccessTokenSilently,
             }}
           >
-            <Nav />
-            <Main />
+            <PaginationContext.Provider value={{ page, setPage, pageCount }}>
+              <Main />
+            </PaginationContext.Provider>
             <Footer />
           </AuthContext.Provider>
         </Store.Provider>
@@ -180,5 +92,5 @@ function App() {
   );
 }
 
-export { Store, AuthContext };
+export { Store, AuthContext, PaginationContext };
 export default App;

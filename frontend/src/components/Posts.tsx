@@ -1,11 +1,33 @@
 // @ts-nocheck
 import { useContext } from "react";
 import { AuthContext, Store } from "../App";
-import { PostsContext } from "../context/PostsContext";
+import { PostsContext, PostsDispatchContext } from "../context/PostsContext";
+import { useFetch } from "../hooks/useFetch";
+import Pagination from "./Pagination";
 const Posts = () => {
-  const { user } = useContext(AuthContext);
+  const { user, getAccessTokenSilently } = useContext(AuthContext);
   const posts = useContext(PostsContext);
-  const { myPosts, handleLike, loading } = useContext(Store);
+  const postsDispatch = useContext(PostsDispatchContext);
+  const { myPosts, loading } = useContext(Store);
+
+  const handleLike = async (postOwner, postId) => {
+    if (!user) {
+      alert("Please Login to Like or Create Posts");
+      return;
+    }
+    const token = await getAccessTokenSilently();
+
+    const data = await useFetch("/post/like", token, {
+      method: "POST",
+      body: { postOwner, postId, name: user.name },
+    });
+
+    if (data.status === "ok")
+      postsDispatch({
+        type: "LIKE_POST",
+        payload: { postId, name: user.name },
+      });
+  };
 
   const renderPosts = myPosts
     ? posts.filter((post) => post.name === user.name)
@@ -14,7 +36,7 @@ const Posts = () => {
   return (
     <>
       {loading ? (
-        <div className="flex justify-center font-semibold text-xl ml-6 my-1 p-1.5 inline-block bg-gray-200 rounded-full text-gray-700">
+        <div className="flex justify-center font-semibold text-xl mx-16 my-1 p-1.5 inline-block bg-gray-200 rounded-full text-gray-700">
           Loading ..
         </div>
       ) : (
@@ -22,7 +44,7 @@ const Posts = () => {
           {renderPosts.map((item) => (
             <div
               key={item.id}
-              className="border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300"
+              className="mx-14 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300"
             >
               <div className="flex justify-between flex font-semibold text-xl ml-6 my-1 p-1.5 mb-1 inline-block rounded-full text-gray-700">
                 <div className="flex">
@@ -60,6 +82,7 @@ const Posts = () => {
               </div>
             </div>
           ))}
+          <Pagination />
         </>
       )}
     </>

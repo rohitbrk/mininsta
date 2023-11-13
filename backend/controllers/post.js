@@ -11,7 +11,13 @@ const getAllPosts = async (req, res) => {
     for (let posts of allPosts) {
       postsArray.push(...posts);
     }
-    res.status(200).json(postsArray);
+
+    const page = parseInt(req.query.page);
+    const newPosts = postsArray.slice((page - 1) * 5, page * 5);
+    res.status(200).json({
+      posts: newPosts,
+      pageCount: parseInt(postsArray.length / 5 + 1),
+    });
   } catch (err) {
     res.status(500).json({ status: "error", message: "Error retrieving data" });
   }
