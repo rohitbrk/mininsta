@@ -3,23 +3,24 @@ import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext, Store } from "../App";
 import { getDate } from "../utils/date";
-import { useFetch } from "../hooks/useFetch";
+import { post } from "../utils/api";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState(null);
 
-  const { setLoading, setCreatingPost, fetchPosts } = useContext(Store);
   const { user, getAccessTokenSilently } = useContext(AuthContext);
+
+  const { setLoading, setCreatingPost, fetchPosts, setErr } = useContext(Store);
 
   const handleCreatePost = async (title, desc, date, file) => {
     setLoading(true);
     const token = await getAccessTokenSilently();
-
-    const data = await useFetch("/post", token, {
-      method: "POST",
-      body: {
+    const axiosResponse = await post(
+      "/post",
+      token,
+      {
         post: {
           name: user.name,
           title,
@@ -30,15 +31,21 @@ const CreatePost = () => {
           picture: user.picture,
         },
       },
-    });
-    if (data.status === "ok") {
+      setErr
+    );
+
+    if (axiosResponse.data.status === "ok") {
       fetchPosts(1);
     }
   };
 
   const createPost = (title, desc, file) => {
-    const date = getDate();
+    if (!title || !file) {
+      alert("Enter a title and select file");
+      return;
+    }
 
+    const date = getDate();
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {

@@ -1,7 +1,9 @@
-import { useState } from "react";
-const Communities = () => {
-  const communities = ["Travel", "Food", "Culture"];
+import { useState, useContext } from "react";
+import { PostsDispatchContext } from "../context/PostsContext";
+
+const Communities = ({ communities }) => {
   const [showCommunities, setShowCommunities] = useState(false);
+  const postsDispatch = useContext(PostsDispatchContext);
 
   return (
     <div className="w-full h-auto mt-[150px] mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300">
@@ -60,13 +62,22 @@ const Communities = () => {
         {showCommunities ? (
           <ul className="flex flex-col">
             <hr className="h-px mx-8 mt-4 mb-1 bg-gray-300 border-0" />
-            {communities.map((item) => (
+            {communities?.map((item) => (
               <li
                 key={item}
                 className="block text-xl font-small leading-tight inline-block whitespace-nowrap rounded-1 bg-primary-100 text-center align-baseline font-bold leading-none text-primary-700"
               >
                 <a className="cursor-pointer text-gray-600 font-medium hover:text-blue-600">
-                  {item}
+                  <button
+                    onClick={() => {
+                      postsDispatch({
+                        type: "CUSTOM_POSTS",
+                        payload: { name: item },
+                      });
+                    }}
+                  >
+                    {item}
+                  </button>
                 </a>
               </li>
             ))}

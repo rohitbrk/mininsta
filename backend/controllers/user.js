@@ -1,5 +1,17 @@
 import MininstaUser from "../models/user.model.js";
 
+const getSuggestions = (req, res) => {
+  try {
+    res.status(200).json({
+      communities: ["Travel", "Food", "Culture"],
+      popularUsers: ["Rohith Kumar", "Harish"],
+      tips: ["Use png/ jpg", "Give catchy titles"],
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Error retrieving data" });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const response = await MininstaUser.findOneAndDelete({
@@ -29,4 +41,4 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { loginUser, deleteUser };
+export { getSuggestions, loginUser, deleteUser };

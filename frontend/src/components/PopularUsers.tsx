@@ -1,6 +1,7 @@
-import { useState } from "react";
-const PopularUsers = () => {
-  const popularUsers = ["Rohith", "Harish"];
+import { useContext, useState } from "react";
+import { PostsDispatchContext } from "../context/PostsContext";
+const PopularUsers = ({ popularUsers }) => {
+  const postsDispatch = useContext(PostsDispatchContext);
   const [popularUsersButton, setPopularUsersButton] = useState(false);
 
   return (
@@ -62,13 +63,21 @@ const PopularUsers = () => {
               <hr className="w-72 h-px mb-2 bg-gray-200 border-0 " />
             </div>
 
-            {popularUsers.map((item) => (
+            {popularUsers?.map((item) => (
               <li
                 key={item}
                 className="flex justify-center mb-1 block text-lg font-medium leading-tight inline-block whitespace-nowrap rounded-1 bg-primary-100 align-baseline font-bold leading-none text-gray-700"
               >
                 <>{item}</>
-                <button className="ml-4 flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-1 text-center ml-2 mb-2">
+                <button
+                  onClick={() => {
+                    postsDispatch({
+                      type: "CUSTOM_POSTS",
+                      payload: { name: item },
+                    });
+                  }}
+                  className="ml-4 flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-1 text-center ml-2 mb-2"
+                >
                   view
                 </button>
               </li>

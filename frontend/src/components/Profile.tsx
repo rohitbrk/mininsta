@@ -1,13 +1,18 @@
-// @ts-nocheck
 import { useContext, useState } from "react";
 import { AuthContext, Store } from "../App";
-import { useFetch } from "../hooks/useFetch";
+import { deleteReq } from "../utils/api";
 
 const Profile = () => {
   const { user, logout, getAccessTokenSilently } = useContext(AuthContext);
+  const { setErr } = useContext(Store);
 
-  const { setCreatingPost, creatingPost, setMyPosts, myPosts, fetchPosts } =
-    useContext(Store);
+  const {
+    setCreatingPost,
+    creatingPost,
+    setMyPostsFlag,
+    myPostsFlag,
+    fetchPosts,
+  } = useContext(Store);
 
   const handleLogout = () => {
     setCreatingPost(false);
@@ -15,13 +20,9 @@ const Profile = () => {
   };
 
   const handleDeleteAccount = async (name) => {
-    setCreatingPost(false);
     const token = await getAccessTokenSilently();
-    const data = await useFetch(`/user?name=${name}`, token, {
-      method: "DELETE",
-    });
-
-    if (data.status === "ok") {
+    const axiosResponse = await deleteReq(`/user?name=${name}`, token, setErr);
+    if (axiosResponse.data.status === "ok") {
       logout();
       fetchPosts(1);
     }
@@ -37,9 +38,9 @@ const Profile = () => {
       },
     },
     {
-      name: myPosts ? "All Posts" : "My Posts",
+      name: myPostsFlag ? "All Posts" : "My Posts",
       onClick: () => {
-        setMyPosts((prev) => !prev);
+        setMyPostsFlag((prev) => !prev);
         setDropdown(false);
       },
     },
@@ -54,7 +55,7 @@ const Profile = () => {
   ];
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="mt-2 relative inline-block text-left">
       <div>
         <button
           type="button"
@@ -64,9 +65,9 @@ const Profile = () => {
           <div className="flex font-semibold text-base">
             <img
               className="w-6 h-6 mt-1 mb-2 mr-1 rounded-full shadow-lg"
-              src={user.picture}
+              src={user?.picture}
             />
-            <p className="mt-1">{user.given_name}</p>
+            <p className="mt-1">{user?.given_name}</p>
           </div>
 
           <svg

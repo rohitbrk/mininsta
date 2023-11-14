@@ -1,6 +1,4 @@
-const Tips = () => {
-  const tips = ["Use png/ jpg", "Give catchy titles"];
-
+const Tips = ({ tips }) => {
   return (
     <div className="w-full mt-[150px] mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300">
       <div className="flex">
@@ -23,7 +21,7 @@ const Tips = () => {
       <>
         <ul className="flex flex-col">
           <hr className="h-px mx-8 mt-4 mb-2 bg-gray-300 border-0" />
-          {tips.map((item) => (
+          {tips?.map((item) => (
             <li
               key={item}
               className="block text-lg font-medium leading-tight inline-block whitespace-nowrap rounded-1 bg-primary-100 text-center align-baseline font-bold leading-none text-primary-700"

@@ -1,6 +1,21 @@
 import MininstaUser from "../models/user.model.js";
 import { v4 as uuidv4 } from "uuid";
 
+const getUserPosts = async (req, res) => {
+  try {
+    const posts = await MininstaUser.findOne(
+      { name: req.params.name },
+      { _id: 0, posts: 1 }
+    )
+      .populate()
+      .exec();
+    if (!posts) return res.status(200).json({ posts: [] });
+    return res.status(200).json({ posts: posts.posts });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Error retrieving data" });
+  }
+};
+
 const getAllPosts = async (req, res) => {
   try {
     const allUsersPosts = await MininstaUser.find({}, { _id: 0, posts: 1 })
@@ -14,7 +29,7 @@ const getAllPosts = async (req, res) => {
 
     const page = parseInt(req.query.page);
     const newPosts = postsArray.slice((page - 1) * 5, page * 5);
-    res.status(200).json({
+    return res.status(200).json({
       posts: newPosts,
       pageCount: parseInt(postsArray.length / 5 + 1),
     });
@@ -58,4 +73,4 @@ const updateLikes = async (req, res) => {
   }
 };
 
-export { getAllPosts, updatePosts, updateLikes };
+export { getUserPosts, getAllPosts, updatePosts, updateLikes };

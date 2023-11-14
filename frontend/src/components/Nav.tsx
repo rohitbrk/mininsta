@@ -1,10 +1,7 @@
 // @ts-nocheck
 import Profile from "./Profile";
-import { useAuth0 } from "@auth0/auth0-react";
 
-const Nav = () => {
-  const { isAuthenticated, loginWithPopup } = useAuth0();
-
+const Nav = ({ isAuthenticated, loginWithPopup, setFilterText }) => {
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();
   };
@@ -12,10 +9,11 @@ const Nav = () => {
   return (
     <div className="flex justify-between mb-6 px-4 border rounded bg-white hover:shadow-lg duration-300">
       <a href="/">
-        <img src="/mininsta-logo.png" className="mt-1 h-16 rounded-2xl" />
+        <img src="/mininsta-logo.png" className="my-1 h-16 rounded-2xl" />
       </a>
       <input
-        className="sm:ml-0 md:ml-[-120px] mr-2 shadow w-100 border rounded-md my-4 text-gray-700 leading-tight"
+        onChange={(e) => setFilterText(e.target.value)}
+        className="sm:ml-0 md:ml-[-120px] mr-2 shadow w-100 border rounded-md my-4 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
         type="text"
         placeholder="search posts, users or communities"
       />
