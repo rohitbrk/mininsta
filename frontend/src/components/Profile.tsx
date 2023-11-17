@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { AuthContext, Store } from "../App";
 import { deleteReq } from "../utils/api";
+import { svgs } from "../utils/svgs";
 
 const Profile = () => {
   const { user, logout, getAccessTokenSilently } = useContext(AuthContext);
@@ -12,6 +13,8 @@ const Profile = () => {
     setMyPostsFlag,
     myPostsFlag,
     fetchPosts,
+    setFilterText,
+    userId,
   } = useContext(Store);
 
   const handleLogout = () => {
@@ -19,9 +22,13 @@ const Profile = () => {
     logout();
   };
 
-  const handleDeleteAccount = async (name) => {
+  const handleDeleteAccount = async (userId) => {
     const token = await getAccessTokenSilently();
-    const axiosResponse = await deleteReq(`/user?name=${name}`, token, setErr);
+    const axiosResponse = await deleteReq(
+      `/user?userId=${userId}`,
+      token,
+      setErr
+    );
     if (axiosResponse.data.status === "ok") {
       logout();
       fetchPosts(1);
@@ -40,6 +47,7 @@ const Profile = () => {
     {
       name: myPostsFlag ? "All Posts" : "My Posts",
       onClick: () => {
+        setFilterText("");
         setMyPostsFlag((prev) => !prev);
         setDropdown(false);
       },
@@ -50,7 +58,7 @@ const Profile = () => {
     },
     {
       name: "Delete",
-      onClick: () => handleDeleteAccount(user.name),
+      onClick: () => handleDeleteAccount(userId),
     },
   ];
 
@@ -70,18 +78,7 @@ const Profile = () => {
             <p className="mt-1">{user?.given_name}</p>
           </div>
 
-          <svg
-            className="h-5 w-5 text-gray-400 display-block mt-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clipRule="evenodd"
-            />
-          </svg>
+          {svgs.profileDropdown}
         </button>
       </div>
       {dropdown ? (

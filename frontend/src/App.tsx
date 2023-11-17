@@ -11,6 +11,8 @@ import Tips from "./components/Tips.tsx";
 import PopularUsers from "./components/PopularUsers.tsx";
 import { get, post } from "./utils/api.ts";
 import Error from "./components/Error.tsx";
+import Suggestions from "./components/Suggestions.tsx";
+import { svgs } from "./utils/svgs.tsx";
 
 const Store = createContext(null);
 const AuthContext = createContext(null);
@@ -28,6 +30,8 @@ const App = () => {
   const [pageCount, setPageCount] = useState(0);
   const [suggestions, setSuggestions] = useState({});
   const [filterText, setFilterText] = useState("");
+
+  const [userId, setUserId] = useState("");
 
   const {
     loginWithPopup,
@@ -50,6 +54,7 @@ const App = () => {
         },
         setErr
       );
+      setUserId(axiosResponse.data.userId);
     };
 
     handleSigninApi();
@@ -88,7 +93,9 @@ const App = () => {
         fetchPosts,
         setLoading,
         filterText,
+        setFilterText,
         setErr,
+        userId,
       }}
     >
       <AuthContext.Provider
@@ -107,10 +114,26 @@ const App = () => {
         <div className="flex">
           <div className="flex flex-col basis-1/4 hidden md:flex">
             <div>
-              <Communities communities={suggestions.communities} />
+              <Suggestions
+                name="Communities"
+                items={suggestions.communities}
+                filterText={filterText}
+                setFilterText={setFilterText}
+                marginTop={36}
+                button={true}
+                svg={svgs.communities}
+              />
             </div>
             <div>
-              <PopularUsers popularUsers={suggestions.popularUsers} />
+              <Suggestions
+                name="Popular Users"
+                items={suggestions.popularUsers}
+                filterText={filterText}
+                setFilterText={setFilterText}
+                marginTop={2}
+                button={true}
+                svg={svgs.popularUsers}
+              />
             </div>
           </div>
           <div className="sm:basis-1 lg:basis-1/2">
@@ -125,8 +148,10 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="basis-1/4 hidden md:flex">
-            <Tips tips={suggestions.tips} />
+          <div className="flex flex-col basis-1/5 hidden md:flex">
+            <div>
+              <Tips tips={suggestions.tips} />
+            </div>
           </div>
         </div>
       </AuthContext.Provider>

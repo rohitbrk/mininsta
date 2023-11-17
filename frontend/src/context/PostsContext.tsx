@@ -8,11 +8,11 @@ const reducer = (state, action) => {
     case "SET_POSTS":
       return action.payload;
     case "MY_POSTS":
-      return state.filter((post) => post.name === action.payload.name);
+      return state.filter((post) => post.userId === action.payload.userId);
     case "LIKE_POST":
       return state.map((post) => {
         if (post.id === action.payload.postId)
-          post.likes.push(action.payload.name);
+          post.likes.push(action.payload.userId);
         return post;
       });
     case "CUSTOM_POSTS":

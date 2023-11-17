@@ -6,4 +6,8 @@ const connectDb = async () => {
   await mongoose.connect(process.env.MONGO_URI);
 };
 
-export { connectDb };
+const disconnectDb = async () => {
+  await mongoose.connection.close();
+};
+
+export { connectDb, disconnectDb };

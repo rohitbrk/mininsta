@@ -1,8 +1,8 @@
 import express from "express";
 import { connectDb } from "./config/db.js";
 import cors from "cors";
-import { user } from "./routes/user.js";
-import { post } from "./routes/post.js";
+import { user } from "./routes/user.route.js";
+import { post } from "./routes/post.route.js";
 
 const PORT = 8080;
 const app = express();

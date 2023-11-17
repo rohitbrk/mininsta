@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { AuthContext, Store } from "../App";
 import { getDate } from "../utils/date";
 import { post } from "../utils/api";
+import InputField from "./common/InputField";
+import { svgs } from "../utils/svgs";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -11,8 +13,8 @@ const CreatePost = () => {
   const [file, setFile] = useState(null);
 
   const { user, getAccessTokenSilently } = useContext(AuthContext);
-
-  const { setLoading, setCreatingPost, fetchPosts, setErr } = useContext(Store);
+  const { userId, setLoading, setCreatingPost, fetchPosts, setErr } =
+    useContext(Store);
 
   const handleCreatePost = async (title, desc, date, file) => {
     setLoading(true);
@@ -22,6 +24,7 @@ const CreatePost = () => {
       token,
       {
         post: {
+          userId,
           name: user.name,
           title,
           desc,
@@ -57,48 +60,20 @@ const CreatePost = () => {
   return (
     <div className="flex justify-center">
       <div className="p-6 max-w-lg mx-6 border rounded-lg bg-white p-2 mb-2 shadow hover:shadow-lg duration-300 border-gray-200">
-        <div className="relative mb-6">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 16"
-            >
-              <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
-              <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
-            </svg>
-          </div>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 "
-            placeholder="Enter title"
-          />
-        </div>
-        <div className="relative mb-6">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 16"
-            >
-              <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
-              <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
-            </svg>
-          </div>
-          <input
-            type="text"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 "
-            placeholder="Enter description"
-          />
-        </div>
+        <InputField
+          svg={svgs.inputTitle}
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter title"
+        />
+        <InputField
+          svg={svgs.inputDesc}
+          type="text"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          placeholder="Enter description"
+        />
         <div>
           <input
             type="file"
