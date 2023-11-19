@@ -1,26 +1,17 @@
-// @ts-nocheck
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, Store } from "../App";
 import { PostsContext, PostsDispatchContext } from "../context/PostsContext";
 import Pagination from "./Pagination";
-import { get, post } from "../utils/api";
+import { post } from "../utils/api";
 import Post from "./Post";
 
 const Posts = () => {
   const [myPosts, setMyPosts] = useState([]);
-  const { isAuthenticated, user, getAccessTokenSilently } =
-    useContext(AuthContext);
+  const { user, getAccessTokenSilently } = useContext(AuthContext);
   const posts = useContext(PostsContext);
   const postsDispatch = useContext(PostsDispatchContext);
-  const {
-    myPostsFlag,
-    setMyPostsFlag,
-    loading,
-    setLoading,
-    filterText,
-    setErr,
-    userId,
-  } = useContext(Store);
+  const { myPostsFlag, loading, filterText, setErr, userId } =
+    useContext(Store);
 
   useEffect(() => {
     if (user) {
@@ -75,6 +66,7 @@ const Posts = () => {
           {renderPosts.length ? (
             renderPosts?.map((item) => (
               <Post
+                key={item.id}
                 id={item.id}
                 userId={item.userId}
                 picture={item.picture}

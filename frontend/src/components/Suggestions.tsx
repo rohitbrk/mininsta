@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { svgs } from "../utils/svgs";
 
+type SuggestionsProps = {
+  name: string;
+  items: { name: string; userId: string };
+  filterText: string;
+  setFilterText: (filterText: string) => void;
+  marginTop: number;
+  svg: string;
+};
+
 const Suggestions = ({
   name,
   items,
@@ -8,12 +17,14 @@ const Suggestions = ({
   setFilterText,
   marginTop,
   svg,
-}) => {
+}: SuggestionsProps) => {
   const [showDropDown, setShowDropdown] = useState(false);
 
   return (
     <div
-      className={`w-full h-auto mt-${marginTop} mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300`}
+      className={`w-full h-auto mt-${
+        marginTop ? marginTop : 20
+      } mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300`}
     >
       <div className="flex justify-between font-semibold">
         <div className="flex">

@@ -1,8 +1,8 @@
 import { svgs } from "../utils/svgs";
 
-const Tips = ({ tips }) => {
+const Tips = ({ tips }: { tips: string[] }) => {
   return (
-    <div className="w-full mt-[150px] mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300">
+    <div className="w-full mt-24 mx-4 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300">
       <div className="flex">
         {svgs.tips}
         Tips

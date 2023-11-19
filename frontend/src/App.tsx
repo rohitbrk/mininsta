@@ -1,14 +1,10 @@
-// @ts-nocheck
 import { createContext, useContext, useEffect, useState } from "react";
 import Nav from "./components/Nav.tsx";
 import Main from "./components/Main";
 import Footer from "./components/Footer";
-import { getDate } from "./utils/date";
 import { useAuth0 } from "@auth0/auth0-react";
 import { PostsDispatchContext } from "./context/PostsContext.tsx";
-import Communities from "./components/Communities.tsx";
 import Tips from "./components/Tips.tsx";
-import PopularUsers from "./components/PopularUsers.tsx";
 import { get, post } from "./utils/api.ts";
 import Error from "./components/Error.tsx";
 import Suggestions from "./components/Suggestions.tsx";
@@ -119,7 +115,7 @@ const App = () => {
                 items={suggestions.communities}
                 filterText={filterText}
                 setFilterText={setFilterText}
-                marginTop={36}
+                marginTop={24}
                 button={true}
                 svg={svgs.communities}
               />

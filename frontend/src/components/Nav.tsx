@@ -1,8 +1,13 @@
-// @ts-nocheck
 import { svgs } from "../utils/svgs";
 import Profile from "./Profile";
 
-const Nav = ({ isAuthenticated, loginWithPopup, setFilterText }) => {
+type NavProps = {
+  isAuthenticated: boolean;
+  loginWithPopup: () => void;
+  setFilterText: (filterText: string) => void;
+};
+
+const Nav = ({ isAuthenticated, loginWithPopup, setFilterText }: NavProps) => {
   const handleSignIn = async () => {
     const response_data = await loginWithPopup();
   };

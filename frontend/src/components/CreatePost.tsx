@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext, Store } from "../App";

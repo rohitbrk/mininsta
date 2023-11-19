@@ -3,11 +3,19 @@ dotenv.config();
 import mongoose from "mongoose";
 
 const connectDb = async () => {
-  await mongoose.connect(process.env.MONGO_URI);
+  try {
+    const response = await mongoose.connect(process.env.MONGO_URI);
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 const disconnectDb = async () => {
-  await mongoose.connection.close();
+  try {
+    const response = await mongoose.connection.close();
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 export { connectDb, disconnectDb };

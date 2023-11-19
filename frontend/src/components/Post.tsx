@@ -1,3 +1,16 @@
+type PostProps = {
+  userId: string;
+  id: string;
+  picture: string;
+  name: string;
+  date: string;
+  img: string;
+  title: string;
+  handleLike: () => void;
+  likes: string[];
+  desc: string;
+};
+
 const Post = ({
   userId,
   id,
@@ -9,7 +22,7 @@ const Post = ({
   handleLike,
   likes,
   desc,
-}) => {
+}: PostProps) => {
   return (
     <div
       key={id}

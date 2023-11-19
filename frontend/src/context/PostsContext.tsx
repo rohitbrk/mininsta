@@ -15,8 +15,6 @@ const reducer = (state, action) => {
           post.likes.push(action.payload.userId);
         return post;
       });
-    case "CUSTOM_POSTS":
-      return state.filter((post) => post.name === action.payload.name);
   }
 };
 

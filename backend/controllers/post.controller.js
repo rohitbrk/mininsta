@@ -47,7 +47,7 @@ const updateLikes = async (req, res) => {
     for (const post of user.posts) {
       if (post.id === postId) {
         if (post.likes.includes(userId))
-          return res.status(200).json({ status: "already liked" });
+          return res.status(200).json({ status: "error" });
         post.likes.push(userId);
       }
     }
