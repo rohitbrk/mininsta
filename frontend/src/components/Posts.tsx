@@ -72,7 +72,6 @@ const Posts = () => {
               const likesString = item.likes.includes(userId)
                 ? `Liked`
                 : `Like`;
-              console.log(item, item.likes, likesString);
               return (
                 <Post
                   key={item.id}
