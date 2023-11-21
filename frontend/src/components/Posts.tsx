@@ -19,9 +19,13 @@ const Posts = () => {
     }
   }, [myPostsFlag]);
 
-  const handleLike = async (postOwnerId, postId) => {
+  const handleLike = async (postOwnerId, postId, likesString) => {
     if (!user) {
       alert("Please Login to Like or Create Posts");
+      return;
+    }
+    if (likesString.includes("Liked")) {
+      alert("You already liked this post");
       return;
     }
     const token = await getAccessTokenSilently();
@@ -64,21 +68,27 @@ const Posts = () => {
       ) : (
         <>
           {renderPosts.length ? (
-            renderPosts?.map((item) => (
-              <Post
-                key={item.id}
-                id={item.id}
-                userId={item.userId}
-                picture={item.picture}
-                name={item.name}
-                date={item.date}
-                img={item.img}
-                title={item.title}
-                handleLike={handleLike}
-                likes={item.likes.length}
-                desc={item.desc}
-              />
-            ))
+            renderPosts?.map((item) => {
+              const likesString = item.likes.includes(userId)
+                ? `Liked`
+                : `Like`;
+              console.log(item, item.likes, likesString);
+              return (
+                <Post
+                  key={item.id}
+                  id={item.id}
+                  userId={item.userId}
+                  picture={item.picture}
+                  name={item.name}
+                  date={item.date}
+                  img={item.img}
+                  title={item.title}
+                  handleLike={handleLike}
+                  likesString={`${likesString} ${item.likes.length}`}
+                  desc={item.desc}
+                />
+              );
+            })
           ) : (
             <div className="flex justify-center mx-14 border rounded bg-white p-2 mb-2 hover:shadow-lg duration-300 font-semibold text-xl my-1 p-1.5 inline-block rounded-full text-gray-700">
               No posts

@@ -7,7 +7,7 @@ type PostProps = {
   img: string;
   title: string;
   handleLike: () => void;
-  likes: string[];
+  likesString: string;
   desc: string;
 };
 
@@ -20,7 +20,7 @@ const Post = ({
   img,
   title,
   handleLike,
-  likes,
+  likesString,
   desc,
 }: PostProps) => {
   return (
@@ -55,10 +55,10 @@ const Post = ({
         <div className="px-6 flex justify-between">
           <div className="items-center font-bold text-xl mb-2">{title}</div>
           <button
-            onClick={() => handleLike(userId, id)}
+            onClick={() => handleLike(userId, id, likesString)}
             className="flex text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 text-center ml-2 mb-2"
           >
-            Like {likes}
+            {likesString}
           </button>
         </div>
         <p className="px-6 text-gray-700 text-base">{desc}</p>
