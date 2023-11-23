@@ -13,7 +13,10 @@ const Nav = ({ isAuthenticated, loginWithPopup, setFilterText }: NavProps) => {
   };
 
   return (
-    <div className="flex justify-between mb-6 px-4 border rounded bg-white hover:shadow-lg duration-300">
+    <div
+      id="nav"
+      className="flex justify-between mb-6 px-4 border rounded bg-white hover:shadow-lg duration-300"
+    >
       <a href="/">
         <img src="/mininsta-logo.png" className="my-1 h-16 rounded-2xl" />
       </a>

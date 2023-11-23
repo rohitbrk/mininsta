@@ -10,7 +10,7 @@ const getSuggestions = (req, res) => {
       ],
       popularUsers: [
         { userId: "rohithkumar", name: "Rohith Kumar" },
-        { userId: "harish", name: "Harish" },
+        { userId: "harishkalli", name: "Harish Kalli" },
       ],
       tips: ["Use png/ jpg", "Give catchy titles"],
     });

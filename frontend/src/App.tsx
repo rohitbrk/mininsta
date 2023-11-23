@@ -148,6 +148,11 @@ const App = () => {
             <div>
               <Tips tips={suggestions.tips} />
             </div>
+            <div className="fixed bottom-2 right-2 z-100">
+              <button>
+                <a href="#nav">{svgs.topArrow}</a>
+              </button>
+            </div>
           </div>
         </div>
       </AuthContext.Provider>
